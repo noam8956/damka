@@ -1,8 +1,9 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
+import javax.swing.*;
 
-public class Client{
+public class Client {
     private Socket socket;
     //private ChessGame game;
 
@@ -15,26 +16,46 @@ public class Client{
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             Scanner scanner = new Scanner(System.in);
 
-            while(true){
+            String playerDeclaration = in.readLine();
+            int playerNumber = 0;
+            if (playerDeclaration.equals("first")) {
+                playerNumber = 0;
+                System.out.println("You are the first player");
+                System.out.println("waiting for second player");
+            } else if (playerDeclaration.equals("second")) {
+                playerNumber = 1;
+                System.out.println("You are second player");
+            }
+
+            int turn = 0;
+            boolean continueGame = true;
+            while (continueGame) { //game loop
                 StringBuilder board = new StringBuilder();
                 String res;
-                while((res = in.readLine()) != null && !res.isEmpty()) { // Read until an empty line
+                while ((res = in.readLine()) != null && !res.isEmpty()) { // Read until an empty line
                     board.append(res).append("\n");
                 }
                 System.out.println(board.toString());
 
+                while (true) {//turn loop
+                    if (playerNumber == turn % 2) {
+                        System.out.println("Enter a move:");
+                        String command = scanner.nextLine();
+                        out.println(command);
+                    }
+                    String status = in.readLine();
+                    if (status.equals("t")) {
+                        turn++;
+                        break;
+                    } else if (status.equals("f")) {
 
-                System.out.println("Enter a move:");
-                String command = scanner.nextLine();
-                out.println(command);
-
-                // Read the board (multi-line response)
-
-                while((res = in.readLine()) != null && !res.isEmpty()) { // Read until an empty line
-                    board.append(res).append("\n");
+                    }
+                    else if (status.equals("1") || status.equals("2")){
+                        System.out.println("Player " + status + " Won"); //print winner
+                        continueGame = false; //break game loop
+                        break;//break turn loop
+                    }
                 }
-                System.out.println(board.toString());
-
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -9,6 +9,24 @@ public class CheckersGame {
 
     }
 
+    public char checkForWin(){
+        int blackPieces = 0;
+        int whitePieces = 0;
+        for (int row = 0; row<board.length;row++){
+            for(int column = 0; column<board[0].length;column++){
+                if(board[row][column].charAt(0) == 'b')
+                    blackPieces++;
+                if(board[row][column].charAt(0) == 'w')
+                    whitePieces++;
+            }
+        }
+        if (blackPieces == 0)
+            return 'w';
+        if(whitePieces == 0)
+            return 'b';
+        return 'c';
+    }
+
     public String[][] createBoard(){
         String[][] board = new String[8][8];
         for(int row = 0; row< board.length;row++ ){
@@ -27,8 +45,9 @@ public class CheckersGame {
 
     public String boardToString() {
         String boardString = "";
+        boardString = "  |0|1|2|3|4|5|6|7|\n";
         for (int row = 0; row < this.board.length; row++) {
-            boardString +="|";
+            boardString += row + " |";
             for (int column = 0; column < this.board[0].length; column++) {
                 boardString+=this.board[row][column] + "|";
             }
@@ -53,6 +72,7 @@ public class CheckersGame {
 
                 // Remove the opponent's piece from the board
                 board[middleRow][middleColumn] = " ";
+
             }
 
             // Move the piece to the target position
