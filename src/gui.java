@@ -1,11 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class gui {
-
+    public static Client player = new Client();
     public static boardSquare[][] board = new boardSquare[8][8];
     public static void main(String[] args) throws InterruptedException {
+
+
 
         // Creating instance of JFrame
         JFrame mainFrame = new JFrame();
@@ -48,13 +51,25 @@ public class gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (boardSquare.numberOfSelectedSquares == 2) {
-                    board[boardSquare.toRow][boardSquare.toColumn].changeType(board[boardSquare.fromRow][boardSquare.fromColumn].getType());
-                    board[boardSquare.fromRow][boardSquare.fromColumn].changeType("Blank");
+                    String[][] status;
+                    try {
+                         status = player.makeMove(boardSquare.fromRow,boardSquare.fromColumn,boardSquare.toRow,boardSquare.toColumn);
+                        System.out.println(status);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    updateBoard(status);
                 }
             }
         });
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
+
+    }
+
+    public static void updateBoard(String[][] newBoard){
 
     }
 }

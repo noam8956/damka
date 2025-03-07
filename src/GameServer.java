@@ -47,7 +47,7 @@ public class GameServer {
 
 
                 while (true) { // Game turn loop
-                    player1Printer.println(this.game.boardToString());
+                    player1Printer.print(this.game.getBoard());
                     player2Printer.println(this.game.boardToString());
 
 

@@ -168,4 +168,8 @@ public class CheckersGame {
         return false;  // If no valid move conditions are met
     }
 
+    public String[][] getBoard(){
+        return board;
+    }
+
 }
