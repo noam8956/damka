@@ -2,20 +2,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Stack;
 
 public class gui {
     public static Client player = new Client();
     public static boardSquare[][] board = new boardSquare[8][8];
-    public static void main(String[] args) throws InterruptedException {
+    public static JPanel boardPanel = new JPanel();
 
+    public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
 
 
         // Creating instance of JFrame
         JFrame mainFrame = new JFrame();
+        mainFrame.setTitle("you are player " + (player.playerNumber + 1) + " color is " + player.playerColor);
         mainFrame.setSize(500, 600);
 
         // Creating boardPanel for the board layout
-        JPanel boardPanel = new JPanel();
         GridLayout boardLayout = new GridLayout(8, 8);
         boardPanel.setLayout(boardLayout);
 
@@ -51,16 +53,18 @@ public class gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (boardSquare.numberOfSelectedSquares == 2) {
-                    String[][] status;
+                    String[][] newBoard;
                     try {
-                         status = player.makeMove(boardSquare.fromRow,boardSquare.fromColumn,boardSquare.toRow,boardSquare.toColumn);
-                        System.out.println(status);
+                        newBoard = player.makeMove(boardSquare.fromRow, boardSquare.fromColumn, boardSquare.toRow, boardSquare.toColumn);
+                        boardSquare.numberOfSelectedSquares = 0;
+
+                        updateBoard(newBoard);
+                        updateBoard(player.readBoard());
                     } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        ex.printStackTrace();
                     } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
+                       ex.printStackTrace();
                     }
-                    updateBoard(status);
                 }
             }
         });
@@ -69,14 +73,38 @@ public class gui {
 
     }
 
-    public static void updateBoard(String[][] newBoard){
+    public static void updateBoard(String[][] newBoard) {
+        boardPanel.removeAll();
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                String color = "";
+                if (newBoard[row][column].equals("w"))
+                    color = "Red";
+                else if (newBoard[row][column].equals("b"))
+                    color = "Black";
+                else
+                    color = "Blank";
+                if ((row + column) % 2 == 0) {
+                    if (row <= 2)
+                        board[row][column] = new boardSquare(row, column, color);
+                    else if (row >= 5)
+                        board[row][column] = new boardSquare(row, column, color);
+                    else
+                        board[row][column] = new boardSquare(row, column, color);
+                } else
+                    board[row][column] = new boardSquare(row, column, color);
+                boardPanel.add(board[row][column]);
+
+            }
+        }
+        boardPanel.revalidate();
+        boardPanel.repaint();
 
     }
 }
 
 
-class boardSquare extends JComponent
-{
+class boardSquare extends JComponent {
     private int row; //x position of the rectangle measured from top left corner
     private int column; //y position of the rectangle measured from top left corner
 
@@ -85,29 +113,24 @@ class boardSquare extends JComponent
 
     private boolean isSelected = false;
 
-     public static int numberOfSelectedSquares= 0, fromRow=0, fromColumn= 0,toRow = 0,toColumn = 0;
+    public static int numberOfSelectedSquares = 0, fromRow = 0, fromColumn = 0, toRow = 0, toColumn = 0;
+    //static Stack<Piece> selection = new Stack<Piece>();
 
-    public boardSquare(int row, int column, String type)
-    {
+    public boardSquare(int row, int column, String type) {
         this.row = row;
         this.column = column;
-        if (type.equals("Black"))
-        {
+        if (type.equals("Black")) {
             isBlack = true;
             isRed = false;
-        }
-        else if (type.equals("Red"))
-        {
+        } else if (type.equals("Red")) {
             isRed = true;
             isBlack = false;
-        }
-        else if (type.equals("Blank"))
-        {
+        } else if (type.equals("Blank")) {
             isBlack = false;
             isRed = false;
         }
 
-        if((row+column)%2==0)
+        if ((row + column) % 2 == 0)
             this.setBackground(Color.white);
         else
             this.setBackground(Color.BLACK);
@@ -119,19 +142,18 @@ class boardSquare extends JComponent
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+
                 // Handle the click event
-                if(isSelected){
+                if (isSelected) {
                     numberOfSelectedSquares--;
                     isSelected = false;
-                }
-                else if (!isSelected){
-                    if(numberOfSelectedSquares == 0){
+                } else if (!isSelected) {
+                    if (numberOfSelectedSquares == 0) {
                         isSelected = true;
                         fromRow = row;
                         fromColumn = column;
                         numberOfSelectedSquares++;
-                    }
-                    else if(numberOfSelectedSquares == 1){
+                    } else if (numberOfSelectedSquares == 1) {
                         isSelected = true;
                         toColumn = column;
                         toRow = row;
@@ -140,7 +162,7 @@ class boardSquare extends JComponent
                 }
 
 
-               repaint();
+                repaint();
                 System.out.println("Clicked on square: Row = " + row + ", Column = " + column);
                 // You can add any logic here to handle the click, such as selecting or moving pieces
             }
@@ -183,30 +205,38 @@ class boardSquare extends JComponent
         }
     }
 
-    public void changeType(String newType){
-        if(newType.equals("Red")){
-            isBlack=false;
-            isRed=true;
-        }
-        else if(newType.equals("Black")){
-            isBlack=true;
-            isRed=false;
-        }
-        else if(newType.equals("Blank")){
-            isBlack=false;
-            isRed=false;
+    public void changeType(String newType) {
+        if (newType.equals("Red")) {
+            isBlack = false;
+            isRed = true;
+        } else if (newType.equals("Black")) {
+            isBlack = true;
+            isRed = false;
+        } else if (newType.equals("Blank")) {
+            isBlack = false;
+            isRed = false;
         }
 
         repaint();
 
     }
 
-    public String getType(){
-        if(isBlack)
+    public String getType() {
+        if (isBlack)
             return "Black";
-        else if(isRed)
+        else if (isRed)
             return "Red";
         else
             return "Blank";
+    }
+}
+
+class Piece {
+    int row;
+    int column;
+
+    public Piece(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
 }

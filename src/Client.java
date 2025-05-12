@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.*;
@@ -9,6 +10,8 @@ public class Client {
     //private ChessGame game;
     private PrintWriter out;
     private BufferedReader in;
+    int playerNumber = 0;
+    String playerColor = "black";
 
     public Client(/*, ChessGame game*/) {
         //this.game = game;
@@ -20,16 +23,17 @@ public class Client {
             Scanner scanner = new Scanner(System.in);
 
             String playerDeclaration = in.readLine();
-            int playerNumber = 0;
             if (playerDeclaration.equals("first")) {
-                playerNumber = 0;
+                this.playerNumber = 0;
+                this.playerColor = "Red";
                 System.out.println("You are the first player");
                 System.out.println("waiting for second player");
             } else if (playerDeclaration.equals("second")) {
-                playerNumber = 1;
+                this.playerNumber = 1;
+                this.playerColor = "Black";
                 System.out.println("You are second player");
             }
-
+            readBoard();
             int turn = 0;
             boolean continueGame = true;
             /*while (continueGame) { //game loop
@@ -62,18 +66,20 @@ public class Client {
             }*/
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
     public String[][] makeMove(int row,int column, int destRow,int destColumn ) throws IOException, ClassNotFoundException {
-        String[][] check = {{"a","b","c"},{"a","c","b"},{"c","b","a"}};
-        byte[] bytes = ByteArraysHandler.convert2DArrayToByteArray(check);
-        System.out.println(Arrays.deepToString(ByteArraysHandler.convertByteArrayTo2DArray(bytes)));
-
         out.println("move " +row +""+column+" " + destRow+""+destColumn);
         String status = in.readLine();
+        System.out.println(status);
         if(status.equals("t")){
-            return readBoard();
+            String[][] newBoard = readBoard();
+            System.out.println("printing new board....");
+            System.out.println(Arrays.deepToString(newBoard));
+            return newBoard;
 
         }
         else return null;
@@ -86,7 +92,14 @@ public class Client {
         while ((res = in.readLine()) != null && !res.isEmpty()) { // Read until an empty line
             board.append(res).append("\n");
         }
-        return ByteArraysHandler.convertByteArrayTo2DArray(res.getBytes());
+        String[] rows = board.toString().split("\n");
+        String[][] boardArray = new String[rows.length-1][];;
+        for (int i = 1; i< rows.length;i++){
+            boardArray[i-1] = rows[i].substring(3).split("\\|");
+        }
+        System.out.println("printing game board...");
+        System.out.println(boardArray);
+        return boardArray;
     }
 
     public static void main(String[] args) {

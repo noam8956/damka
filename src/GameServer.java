@@ -47,7 +47,7 @@ public class GameServer {
 
 
                 while (true) { // Game turn loop
-                    player1Printer.print(this.game.getBoard());
+                    player1Printer.println(this.game.boardToString());
                     player2Printer.println(this.game.boardToString());
 
 
@@ -64,8 +64,10 @@ public class GameServer {
                             } else if (result) {
                                 turn++;
                                 player1Printer.println("t");
-                                player2Printer.println("t");
+                                //player2Printer.println("t");
                                 System.out.println("Player 1 turn ended");
+                                player1Printer.println(this.game.boardToString());
+                                player2Printer.println(this.game.boardToString());
                                 break;
                             } else {
                                 player1Printer.println("f");
@@ -84,13 +86,16 @@ public class GameServer {
                                 player1Printer.println(gameStatus);
                             } else if (result) {
                                 turn++;
-                                player1Printer.println("t");
+                                //player1Printer.println("t");
                                 player2Printer.println("t");
+                                player1Printer.println(this.game.boardToString());
+                                player2Printer.println(this.game.boardToString());
                                 System.out.println("Player 2 turn ended");
                                 break;
                             } else {
                                 player1Printer.println("f");
                                 player2Printer.println("f");
+
                             }
                         }
                     }
@@ -129,7 +134,9 @@ public class GameServer {
         if (status == 'w')
             return 1;
         return 0;
+
     }
+
 
     public static void main(String[] args) {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
