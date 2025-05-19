@@ -53,9 +53,10 @@ public class gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (boardSquare.numberOfSelectedSquares == 2) {
-                    String[][] newBoard;
+                    String[][] newBoard = null;
                     try {
-                        newBoard = player.makeMove(boardSquare.fromRow, boardSquare.fromColumn, boardSquare.toRow, boardSquare.toColumn);
+                        while(newBoard==null)
+                            newBoard = player.makeMove(boardSquare.fromRow, boardSquare.fromColumn, boardSquare.toRow, boardSquare.toColumn);
                         boardSquare.numberOfSelectedSquares = 0;
 
                         updateBoard(newBoard);
@@ -101,6 +102,7 @@ public class gui {
         boardPanel.repaint();
 
     }
+
 }
 
 

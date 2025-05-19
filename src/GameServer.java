@@ -26,8 +26,6 @@ public class GameServer {
                     new PrintWriter(socket.getOutputStream(), true).println("first");
                 if (this.sockets.size() == 2)
                     new PrintWriter(socket.getOutputStream(), true).println("second");
-                //Thread clientThread = new Thread(new ClientHandler(socket));
-                //clientThread.start();
             }
 
 
@@ -51,53 +49,52 @@ public class GameServer {
                     player2Printer.println(this.game.boardToString());
 
 
-                    if (turn % 2 == 0) {
-                        while (true) {
-                            System.out.println("player 1 turn");
-                            String command = player1Reader.readLine();
-                            System.out.println("received command from player 1: " + command);
-                            boolean result = handleClient(command, 1);
-                            int gameStatus = checkForWin();
-                            if (result && gameStatus != 0) {
-                                System.out.println("player " + gameStatus + " won!!!");
-                                player1Printer.println(gameStatus);
-                            } else if (result) {
-                                turn++;
-                                player1Printer.println("t");
-                                //player2Printer.println("t");
-                                System.out.println("Player 1 turn ended");
-                                player1Printer.println(this.game.boardToString());
-                                player2Printer.println(this.game.boardToString());
-                                break;
-                            } else {
-                                player1Printer.println("f");
-                                player2Printer.println("f");
-                            }
+                    while (true) {
+                        System.out.println("player 1 turn");
+                        String command = player1Reader.readLine();
+                        System.out.println("received command from player 1: " + command);
+                        boolean result = handleClient(command, 1);
+                        int gameStatus = checkForWin();
+                        if (result && gameStatus != 0) { //check if someone won
+                            System.out.println("player " + gameStatus + " won!!!");
+                            player1Printer.println(gameStatus);
+                        } else if (result) { //check if valid move
+                            turn++;
+                            player1Printer.println("t");
+                            //player2Printer.println("t");
+                            System.out.println("Player 1 turn ended");
+                            player1Printer.println(this.game.boardToString());
+                            player2Printer.println(this.game.boardToString());
+                            break;
+                        } else {
+                            player1Printer.println("f");
+                            //player2Printer.println("f");
                         }
-                    } else {
-                        while (true) {
-                            System.out.println("player 2 turn");
-                            String command = player2Reader.readLine();
-                            System.out.println("received command from player 2: " + command);
-                            boolean result = handleClient(command, 2);
-                            int gameStatus = checkForWin();
-                            if (result && gameStatus != 0) {
-                                System.out.println("player " + gameStatus + " won!!!");
-                                player1Printer.println(gameStatus);
-                            } else if (result) {
-                                turn++;
-                                //player1Printer.println("t");
-                                player2Printer.println("t");
-                                player1Printer.println(this.game.boardToString());
-                                player2Printer.println(this.game.boardToString());
-                                System.out.println("Player 2 turn ended");
-                                break;
-                            } else {
-                                player1Printer.println("f");
-                                player2Printer.println("f");
+                    }
 
-                            }
+                    while (true) {
+                        System.out.println("player 2 turn");
+                        String command = player2Reader.readLine();
+                        System.out.println("received command from player 2: " + command);
+                        boolean result = handleClient(command, 2);
+                        int gameStatus = checkForWin();
+                        if (result && gameStatus != 0) {
+                            System.out.println("player " + gameStatus + " won!!!");
+                            player1Printer.println(gameStatus);
+                        } else if (result) {
+                            turn++;
+                            //player1Printer.println("t");
+                            player2Printer.println("t");
+                            player1Printer.println(this.game.boardToString());
+                            player2Printer.println(this.game.boardToString());
+                            System.out.println("Player 2 turn ended");
+                            break;
+                        } else {
+                            //player1Printer.println("f");
+                            player2Printer.println("f");
+
                         }
+
                     }
                 }
             }

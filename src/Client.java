@@ -11,7 +11,8 @@ public class Client {
     private PrintWriter out;
     private BufferedReader in;
     int playerNumber = 0;
-    String playerColor = "black";
+    String playerColor = "Black";
+    int turn = 0;
 
     public Client(/*, ChessGame game*/) {
         //this.game = game;
@@ -33,40 +34,9 @@ public class Client {
                 this.playerColor = "Black";
                 System.out.println("You are second player");
             }
-            readBoard();
-            int turn = 0;
             boolean continueGame = true;
-            /*while (continueGame) { //game loop
-                StringBuilder board = new StringBuilder();
-                String res;
-                while ((res = in.readLine()) != null && !res.isEmpty()) { // Read until an empty line
-                    board.append(res).append("\n");
-                }
-                System.out.println(board.toString());
 
-                while (true) {//turn loop
-                    if (playerNumber == turn % 2) {
-                        System.out.println("Enter a move:");
-                        String command = scanner.nextLine();
-                        out.println(command);
-                    }
-                    String status = in.readLine();
-                    if (status.equals("t")) {
-                        turn++;
-                        break;
-                    } else if (status.equals("f")) {
-
-                    }
-                    else if (status.equals("1") || status.equals("2")){
-                        System.out.println("Player " + status + " Won"); //print winner
-                        continueGame = false; //break game loop
-                        break;//break turn loop
-                    }
-                }
-            }*/
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -79,6 +49,7 @@ public class Client {
             String[][] newBoard = readBoard();
             System.out.println("printing new board....");
             System.out.println(Arrays.deepToString(newBoard));
+            turn++;
             return newBoard;
 
         }
